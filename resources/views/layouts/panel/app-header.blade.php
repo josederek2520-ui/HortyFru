@@ -1,11 +1,13 @@
+@php
+    use App\Helpers\MenuHelper;
+
+    $quickAccessItems = MenuHelper::getQuickAccessItems(auth()->user());
+@endphp
+
 <header
     class="sticky top-0 flex w-full bg-white border-gray-200 z-99999 dark:border-gray-800 dark:bg-gray-900 xl:border-b"
-    x-data="{
-        isApplicationMenuOpen: false,
-        toggleApplicationMenu() {
-            this.isApplicationMenuOpen = !this.isApplicationMenuOpen;
-        }
-    }">
+    x-data="quickAccess"
+    data-quick-access-items='@json($quickAccessItems)'>
     <div class="flex flex-col items-center justify-between grow xl:flex-row xl:px-6">
         <div
             class="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 dark:border-gray-800 sm:gap-4 xl:justify-normal xl:border-b-0 xl:px-0 lg:py-4">
@@ -67,26 +69,15 @@
 
             <!-- Search Bar (desktop only) -->
             <div class="hidden xl:block">
-                <form>
-                    <div class="relative">
-                        <span class="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
-                            <!-- Search Icon -->
-                            <svg class="fill-gray-500 dark:fill-gray-400" width="20" height="20"
-                                viewBox="0 0 20 20" fill="none">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M3.04175 9.37363C3.04175 5.87693 5.87711 3.04199 9.37508 3.04199C12.8731 3.04199 15.7084 5.87693 15.7084 9.37363C15.7084 12.8703 12.8731 15.7053 9.37508 15.7053C5.87711 15.7053 3.04175 12.8703 3.04175 9.37363ZM9.37508 1.54199C5.04902 1.54199 1.54175 5.04817 1.54175 9.37363C1.54175 13.6991 5.04902 17.2053 9.37508 17.2053C11.2674 17.2053 13.003 16.5344 14.357 15.4176L17.177 18.238C17.4699 18.5309 17.9448 18.5309 18.2377 18.238C18.5306 17.9451 18.5306 17.4703 18.2377 17.1774L15.418 14.3573C16.5365 13.0033 17.2084 11.2669 17.2084 9.37363C17.2084 5.04817 13.7011 1.54199 9.37508 1.54199Z"
-                                    fill="" />
-                            </svg>
-                        </span>
-                        <input type="text" placeholder="Search or type command..."
-                            class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]" />
-                        <button
-                            class="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
-                            <span> ⌘ </span>
-                            <span> K </span>
-                        </button>
-                    </div>
-                </form>
+                <button type="button" @click="openSearch()" class="group relative block text-left" aria-label="Abrir buscador rápido">
+                    <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
+                        <svg class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M3.04175 9.37363C3.04175 5.87693 5.87711 3.04199 9.37508 3.04199C12.8731 3.04199 15.7084 5.87693 15.7084 9.37363C15.7084 12.8703 12.8731 15.7053 9.37508 15.7053C5.87711 15.7053 3.04175 12.8703 3.04175 9.37363ZM9.37508 1.54199C5.04902 1.54199 1.54175 5.04817 1.54175 9.37363C1.54175 13.6991 5.04902 17.2053 9.37508 17.2053C11.2674 17.2053 13.003 16.5344 14.357 15.4176L17.177 18.238C17.4699 18.5309 17.9448 18.5309 18.2377 18.238C18.5306 17.9451 18.5306 17.4703 18.2377 17.1774L15.418 14.3573C16.5365 13.0033 17.2084 11.2669 17.2084 9.37363C17.2084 5.04817 13.7011 1.54199 9.37508 1.54199Z" fill="" />
+                        </svg>
+                    </span>
+                    <span class="dark:bg-dark-900 flex h-11 w-[430px] items-center rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-20 text-sm text-gray-400 shadow-theme-xs transition group-hover:border-brand-300 dark:border-gray-800 dark:bg-white/3 dark:text-white/30 dark:group-hover:border-brand-800">Buscar módulo o acción...</span>
+                    <span class="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center rounded-lg border border-gray-200 bg-gray-50 px-2 py-1 text-xs text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">Ctrl K</span>
+                </button>
             </div>
         </div>
 
@@ -94,6 +85,12 @@
         <div :class="isApplicationMenuOpen ? 'flex' : 'hidden'"
             class="items-center justify-between w-full gap-4 px-5 py-4 xl:flex shadow-theme-md xl:justify-end xl:px-0 xl:shadow-none">
             <div class="flex items-center gap-2 2xsm:gap-3">
+                <button type="button" @click="openSearch()"
+                    class="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white xl:hidden"
+                    aria-label="Abrir buscador rápido">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m14.5 14.5 3 3M16 9a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+                </button>
+
                 <!-- Theme Toggle Button -->
                 <button
                     class="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
@@ -119,5 +116,36 @@
             <!-- User Dropdown -->
             <x-panel.header.user-dropdown />
         </div>
+    </div>
+
+    <div x-show="searchOpen" x-cloak class="fixed inset-0 z-99999 flex items-start justify-center p-4 pt-[12vh] sm:p-6 sm:pt-[15vh]" role="dialog" aria-modal="true" aria-labelledby="quick-search-title">
+        <button type="button" @click="closeSearch()" class="fixed inset-0 h-full w-full cursor-default bg-gray-950/60 backdrop-blur-sm" aria-label="Cerrar buscador"></button>
+        <section class="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-theme-xl dark:border-gray-800 dark:bg-gray-900">
+            <h2 id="quick-search-title" class="sr-only">Buscador rápido</h2>
+            <label class="relative block border-b border-gray-200 dark:border-gray-800">
+                <span class="sr-only">Buscar módulo o acción</span>
+                <svg class="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m14.5 14.5 3 3M16 9a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+                <input x-ref="quickSearchInput" x-model="query" @input="resetSelection()" @keydown.down.prevent="moveSelection(1)" @keydown.up.prevent="moveSelection(-1)" @keydown.enter.prevent="selectActive()" @keydown.escape.prevent="closeSearch()" type="search" autocomplete="off" placeholder="Buscar módulo o acción..." class="h-16 w-full bg-transparent py-4 pl-14 pr-14 text-base text-gray-800 outline-none placeholder:text-gray-400 dark:text-white dark:placeholder:text-gray-500">
+                <button type="button" @click="closeSearch()" class="absolute right-4 top-1/2 -translate-y-1/2 rounded-md border border-gray-200 px-2 py-1 text-xs font-medium text-gray-500 dark:border-gray-700 dark:text-gray-400">Esc</button>
+            </label>
+
+            <div class="max-h-[55vh] overflow-y-auto p-2">
+                <template x-for="(item, index) in filteredItems" :key="item.path + item.name">
+                    <button type="button" @click="navigate(item)" @mouseenter="activeIndex = index" class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition" :class="activeIndex === index ? 'bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-300' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/[0.04]'">
+                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"><svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+                        <span class="min-w-0 flex-1"><span class="block truncate text-sm font-semibold" x-text="item.name"></span><span class="block truncate text-xs text-gray-400" x-text="item.section"></span></span>
+                        <span class="text-xs text-gray-400" x-show="activeIndex === index">Entrar</span>
+                    </button>
+                </template>
+
+                <div x-show="filteredItems.length === 0" class="flex flex-col items-center gap-2 px-6 py-10 text-center">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 text-gray-400 dark:bg-gray-800"><svg class="h-6 w-6" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m14.5 14.5 3 3M16 9a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg></span>
+                    <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">No encontramos esa opción</p>
+                    <p class="text-xs text-gray-500">Prueba escribiendo el nombre de otro módulo o acción.</p>
+                </div>
+            </div>
+
+            <div class="hidden items-center gap-4 border-t border-gray-200 px-5 py-3 text-xs text-gray-400 sm:flex dark:border-gray-800"><span>↑ ↓ para moverte</span><span>Enter para abrir</span><span>Esc para cerrar</span></div>
+        </section>
     </div>
 </header>

@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Pedido;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'pagina.inicio')->name('inicio');
@@ -17,6 +19,12 @@ Route::middleware(['auth', 'active'])->prefix('panel')->name('panel.')->group(fu
     Route::view('/unidades-medida', 'panel.unidades-medida.index')->name('unidades-medida.index');
     Route::view('/articulos', 'panel.articulos.index')->name('articulos.index');
     Route::view('/presentaciones-articulos', 'panel.presentaciones-articulos.index')->name('presentaciones-articulos.index');
+    Route::view('/pedidos', 'panel.pedidos.index')->name('pedidos.index');
+    Route::view('/pedidos/crear', 'panel.pedidos.create')->name('pedidos.create');
+    Route::get('/pedidos/{pedido}/editar', function (Pedido $pedido): View {
+        return view('panel.pedidos.edit', ['pedido' => $pedido]);
+    })->name('pedidos.edit');
+    Route::view('/preparacion-pedidos', 'panel.pedidos.preparation')->name('pedidos.preparation');
     Route::view('/roles', 'panel.roles.index')->name('roles.index');
     Route::view('/activity', 'panel.activity-logs.index')->name('activity.index');
     Route::view('/calendar', 'panel.calender')->name('calendar');

@@ -55,6 +55,11 @@ enum PermissionName: string
     case ArticlePresentationsCreate = 'presentaciones_articulos.crear';
     case ArticlePresentationsUpdate = 'presentaciones_articulos.editar';
     case ArticlePresentationsChangeStatus = 'presentaciones_articulos.cambiar_estado';
+    case OrdersView = 'pedidos.ver';
+    case OrdersCreate = 'pedidos.crear';
+    case OrdersUpdate = 'pedidos.editar';
+    case OrdersCancel = 'pedidos.cancelar';
+    case OrdersPrepare = 'pedidos.preparar';
     case ActivityView = 'actividad.ver';
     case ActivityViewDetails = 'actividad.ver_detalle';
     case ActivityExport = 'actividad.exportar';
@@ -113,6 +118,11 @@ enum PermissionName: string
             self::ArticlePresentationsCreate => 'Crear presentaciones de artículos',
             self::ArticlePresentationsUpdate => 'Editar presentaciones de artículos',
             self::ArticlePresentationsChangeStatus => 'Activar o desactivar presentaciones de artículos',
+            self::OrdersView => 'Ver pedidos',
+            self::OrdersCreate => 'Crear pedidos',
+            self::OrdersUpdate => 'Editar pedidos pendientes',
+            self::OrdersCancel => 'Cancelar pedidos pendientes',
+            self::OrdersPrepare => 'Preparar pedidos',
             self::ActivityView => 'Ver registro de actividad',
             self::ActivityViewDetails => 'Ver detalles del registro de actividad',
             self::ActivityExport => 'Exportar registro de actividad',
@@ -139,6 +149,7 @@ enum PermissionName: string
             'unidades_medida' => 'Unidades de medida',
             'articulos' => 'Artículos',
             'presentaciones_articulos' => 'Presentaciones de artículos',
+            'pedidos' => 'Pedidos',
             'actividad' => 'Registro de actividad',
         };
     }

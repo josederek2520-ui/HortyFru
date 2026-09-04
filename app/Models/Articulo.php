@@ -47,6 +47,11 @@ class Articulo extends Model
         return $this->hasMany(PresentacionArticulo::class);
     }
 
+    public function detallesPedido(): HasMany
+    {
+        return $this->hasMany(DetallePedido::class);
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

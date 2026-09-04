@@ -1,7 +1,7 @@
 
 @php
     use App\Helpers\MenuHelper;
-    $menuGroups = MenuHelper::getMenuGroups();
+    $menuGroups = MenuHelper::getVisibleMenuGroups(auth()->user());
 
     // Get current path
     $currentPath = request()->path();
@@ -20,7 +20,6 @@
 
             @foreach ($menuGroups as $groupIndex => $menuGroup)
                 @foreach ($menuGroup['items'] as $itemIndex => $item)
-                    @continue(isset($item['permission']) && ! auth()->user()->can($item['permission']))
                     @if (isset($item['subItems']))
                         // Check if any submenu item matches current path
                         @foreach ($item['subItems'] as $subItem)
@@ -101,7 +100,6 @@
                         <!-- Menu Items -->
                         <ul class="flex flex-col gap-1">
                             @foreach ($menuGroup['items'] as $itemIndex => $item)
-                                @continue(isset($item['permission']) && ! auth()->user()->can($item['permission']))
                                 <li>
                                     @if (isset($item['subItems']))
                                         <!-- Menu Item with Submenu -->

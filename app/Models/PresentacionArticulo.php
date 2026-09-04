@@ -9,6 +9,7 @@ use Database\Factories\PresentacionArticuloFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -45,6 +46,11 @@ class PresentacionArticulo extends Model
     public function articulo(): BelongsTo
     {
         return $this->belongsTo(Articulo::class);
+    }
+
+    public function detallesPedido(): HasMany
+    {
+        return $this->hasMany(DetallePedido::class);
     }
 
     public function getActivitylogOptions(): LogOptions

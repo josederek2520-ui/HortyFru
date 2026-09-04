@@ -11,6 +11,93 @@ window.ApexCharts = ApexCharts;
 window.flatpickr = flatpickr;
 window.createPopper = createPopper;
 
+Alpine.data('quickAccess', () => ({
+    isApplicationMenuOpen: false,
+    searchOpen: false,
+    query: '',
+    activeIndex: 0,
+    items: [],
+    keyboardHandler: null,
+
+    init() {
+        this.items = JSON.parse(this.$el.dataset.quickAccessItems || '[]');
+        this.keyboardHandler = (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+                event.preventDefault();
+                this.searchOpen ? this.closeSearch() : this.openSearch();
+            }
+        };
+        window.addEventListener('keydown', this.keyboardHandler);
+    },
+
+    destroy() {
+        window.removeEventListener('keydown', this.keyboardHandler);
+    },
+
+    toggleApplicationMenu() {
+        this.isApplicationMenuOpen = !this.isApplicationMenuOpen;
+    },
+
+    openSearch() {
+        this.searchOpen = true;
+        this.query = '';
+        this.activeIndex = 0;
+        this.$nextTick(() => this.$refs.quickSearchInput.focus());
+    },
+
+    closeSearch() {
+        this.searchOpen = false;
+        this.query = '';
+        this.activeIndex = 0;
+    },
+
+    resetSelection() {
+        this.activeIndex = 0;
+    },
+
+    normalize(value) {
+        return value
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase();
+    },
+
+    get filteredItems() {
+        const term = this.normalize(this.query.trim());
+
+        if (!term) {
+            return this.items.slice(0, 10);
+        }
+
+        return this.items
+            .filter((item) => this.normalize(`${item.name} ${item.section}`).includes(term))
+            .slice(0, 10);
+    },
+
+    moveSelection(direction) {
+        const total = this.filteredItems.length;
+
+        if (total === 0) {
+            return;
+        }
+
+        this.activeIndex = (this.activeIndex + direction + total) % total;
+    },
+
+    selectActive() {
+        const item = this.filteredItems[this.activeIndex];
+
+        if (item) {
+            this.navigate(item);
+        }
+    },
+
+    navigate(item) {
+        this.closeSearch();
+        window.location.assign(item.path);
+    },
+}));
+
 Alpine.data('toastNotification', () => ({
     visible: false,
     title: '',

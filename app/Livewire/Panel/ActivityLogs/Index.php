@@ -4,6 +4,7 @@ namespace App\Livewire\Panel\ActivityLogs;
 
 use App\Enums\ActivityEvent;
 use App\Enums\ActivityLogName;
+use App\Enums\EstadoPedido;
 use App\Enums\PermissionName;
 use App\Enums\TipoEquivalenciaPresentacionArticulo;
 use App\Enums\UsoPresentacionArticulo;
@@ -305,6 +306,23 @@ class Index extends Component
             'predeterminada_compra_presentacion_articulo' => 'Predeterminada para compra',
             'estado_presentacion_articulo' => 'Estado de la presentación',
             'activo_usuario' => 'Estado de la cuenta',
+            'codigo_pedido' => 'Código del pedido',
+            'sucursal_id' => 'Sucursal',
+            'fecha_pedido' => 'Fecha de registro',
+            'fecha_requerida_pedido' => 'Fecha requerida',
+            'estado_pedido' => 'Estado del pedido',
+            'observaciones_pedido' => 'Observaciones',
+            'registrado_por' => 'Registrado por',
+            'preparado_por' => 'Preparado por',
+            'preparado_en' => 'Fecha de preparación',
+            'cancelado_por' => 'Cancelado por',
+            'cancelado_en' => 'Fecha de cancelación',
+            'motivo_cancelacion_pedido' => 'Motivo de cancelación',
+            'cantidad_items_pedido' => 'Cantidad de productos',
+            'detalles_pedido' => 'Detalle de productos',
+            'detalle_pedido_id' => 'Línea del pedido',
+            'presentacion_articulo_id' => 'Presentación',
+            'preparado_detalle_pedido' => 'Producto preparado',
             'name' => 'Nombre',
             'role' => 'Rol',
             'roles' => 'Roles',
@@ -344,10 +362,15 @@ class Index extends Component
             'reason' => $stringValue === 'rate_limit' ? 'Demasiados intentos de inicio de sesión' : 'Acceso restringido',
             'user_agent' => $this->formatUserAgent($stringValue),
             'user_id' => 'Usuario #'.$stringValue,
+            'sucursal_id' => 'Sucursal #'.$stringValue,
+            'registrado_por', 'preparado_por', 'cancelado_por' => 'Usuario #'.$stringValue,
+            'estado_pedido' => EstadoPedido::tryFrom($stringValue)?->label() ?? $stringValue,
             'cliente_id' => 'Cliente #'.$stringValue,
             'categoria_articulo_id' => 'Categoría #'.$stringValue,
             'unidad_medida_id' => 'Unidad de medida #'.$stringValue,
             'articulo_id' => 'Artículo #'.$stringValue,
+            'detalle_pedido_id' => 'Línea #'.$stringValue,
+            'presentacion_articulo_id' => 'Presentación #'.$stringValue,
             'uso_presentacion_articulo' => UsoPresentacionArticulo::tryFrom($stringValue)?->label() ?? $stringValue,
             'tipo_equivalencia_presentacion_articulo' => TipoEquivalenciaPresentacionArticulo::tryFrom($stringValue)?->label() ?? $stringValue,
             'fecha_ingreso_empleado' => $this->formatStoredDate($stringValue),
@@ -369,7 +392,11 @@ class Index extends Component
         }
 
         if (array_is_list($values)) {
-            return collect($values)->map(fn (mixed $item): string => (string) $item)->join(', ');
+            return collect($values)
+                ->map(fn (mixed $item): string => is_array($item)
+                    ? $this->formatArrayValue($item, null)
+                    : (string) $item)
+                ->join(' | ');
         }
 
         return collect($values)

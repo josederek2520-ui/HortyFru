@@ -15,6 +15,7 @@ enum ActivityLogName: string
     case MeasurementUnits = 'unidades_medida';
     case Articles = 'articulos';
     case ArticlePresentations = 'presentaciones_articulos';
+    case Orders = 'pedidos';
     case Roles = 'roles';
     case Authentication = 'autenticacion';
     case System = 'sistema';
@@ -33,6 +34,7 @@ enum ActivityLogName: string
             self::MeasurementUnits => 'Unidades de medida',
             self::Articles => 'Artículos',
             self::ArticlePresentations => 'Presentaciones de artículos',
+            self::Orders => 'Pedidos',
             self::Roles => 'Roles y permisos',
             self::Authentication => 'Autenticación',
             self::System => 'Sistema',
