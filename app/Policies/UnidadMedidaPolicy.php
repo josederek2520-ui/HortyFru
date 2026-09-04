@@ -1,0 +1,71 @@
+<?php
+
+namespace App\Policies;
+
+use App\Enums\PermissionName;
+use App\Models\UnidadMedida;
+use App\Models\User;
+
+class UnidadMedidaPolicy
+{
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(User $user): bool
+    {
+        return $user->can(PermissionName::MeasurementUnitsView->value);
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function view(User $user, UnidadMedida $unidadMedida): bool
+    {
+        return $user->can(PermissionName::MeasurementUnitsView->value);
+    }
+
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create(User $user): bool
+    {
+        return $user->can(PermissionName::MeasurementUnitsCreate->value);
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update(User $user, UnidadMedida $unidadMedida): bool
+    {
+        return $user->can(PermissionName::MeasurementUnitsUpdate->value);
+    }
+
+    public function changeStatus(User $user, UnidadMedida $unidadMedida): bool
+    {
+        return $user->can(PermissionName::MeasurementUnitsChangeStatus->value);
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, UnidadMedida $unidadMedida): bool
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, UnidadMedida $unidadMedida): bool
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, UnidadMedida $unidadMedida): bool
+    {
+        return false;
+    }
+}

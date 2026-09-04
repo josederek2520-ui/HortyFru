@@ -1,0 +1,64 @@
+.site-header__nav {
+    padding-block: 0;
+}
+
+.site-header__actions > .flex {
+    gap: 1rem;
+}
+
+@media (max-width: 639px) {
+    .site-header__login {
+        padding-inline: 0.75rem;
+    }
+
+    .site-header__login-label {
+        display: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    .site-header {
+        display: grid;
+        grid-template-columns: minmax(1rem, 1fr) minmax(0, 80rem) minmax(1rem, 1fr);
+        align-items: center;
+    }
+
+    .site-header__identity,
+    .site-header__nav {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .site-header__identity {
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .site-header__logo,
+    .site-header__actions {
+        pointer-events: auto;
+    }
+
+    .site-header__nav {
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .site-header__nav > .container {
+        padding-right: 16.666667%;
+        padding-left: 16.666667%;
+    }
+
+    .site-header__nav .offcanvas {
+        pointer-events: auto;
+    }
+
+    .site-header__nav .offcanvas-body {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .site-header__actions > .flex {
+        gap: 1.75rem;
+    }
+}
