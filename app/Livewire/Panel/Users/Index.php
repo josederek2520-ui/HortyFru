@@ -220,6 +220,10 @@ class Index extends Component
     #[Computed]
     public function employees(): Collection
     {
+        if (! $this->showFormModal) {
+            return new Collection;
+        }
+
         $currentEmployeeId = $this->editingUserId === null
             ? null
             : Empleado::query()->where('user_id', $this->editingUserId)->value('id');

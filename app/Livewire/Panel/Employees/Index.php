@@ -215,6 +215,10 @@ class Index extends Component
     #[Computed]
     public function availableUsers(): Collection
     {
+        if (! $this->showFormModal) {
+            return new Collection;
+        }
+
         $currentUserId = $this->editingEmployeeId === null
             ? null
             : Empleado::query()->whereKey($this->editingEmployeeId)->value('user_id');

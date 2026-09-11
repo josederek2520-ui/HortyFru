@@ -40,7 +40,15 @@
                     <svg class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m14.5 14.5 3 3M16 9a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
                     <input type="search" wire:model.live.debounce.350ms="search" placeholder="Buscar producto, pedido o sucursal..." class="h-11 w-full rounded-xl border border-gray-300 bg-transparent py-2.5 pl-11 pr-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-brand-400 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:text-white dark:placeholder:text-gray-500">
                 </label>
-                <input type="date" wire:model.live="requiredDate" aria-label="Fecha requerida" class="h-11 rounded-xl border border-gray-300 bg-transparent px-3 text-sm text-gray-700 outline-none focus:border-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+                <x-panel.form.date-picker
+                    id="preparation-required-date-filter"
+                    model="requiredDate"
+                    :default-date="$requiredDate"
+                    aria-label="Fecha requerida para la preparación"
+                    compact
+                    wire:key="preparation-required-date-filter-{{ $requiredDate }}"
+                    class="sm:w-40"
+                />
             </div>
 
             <div class="flex items-center justify-between gap-4 xl:justify-end">

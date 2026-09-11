@@ -12,11 +12,11 @@ class MenuHelperTest extends TestCase
         $groups = collect(MenuHelper::getMenuGroups())->keyBy('title');
 
         $this->assertSame(
-            ['Pedidos', 'Preparación de pedidos'],
+            ['Pedidos', 'Compras', 'Recepciones', 'Preparación de pedidos'],
             collect($groups->get('Operaciones')['items'])->pluck('name')->all(),
         );
         $this->assertSame(
-            ['Almacenes', 'Categorías de artículos', 'Unidades de medida', 'Artículos', 'Presentaciones de artículos'],
+            ['Almacenes', 'Lotes', 'Movimientos de inventario', 'Categorías de productos', 'Unidades de medida', 'Productos', 'Presentaciones de productos'],
             collect($groups->get('Inventario y catálogo')['items'])->pluck('name')->all(),
         );
         $this->assertSame(

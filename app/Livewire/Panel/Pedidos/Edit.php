@@ -106,8 +106,9 @@ class Edit extends Component
             ->all();
 
         return Articulo::query()
-            ->select(['id', 'nombre_articulo', 'unidad_medida_id', 'estado_articulo'])
+            ->select(['id', 'nombre_articulo', 'unidad_medida_id', 'estado_articulo', 'categoria_articulo_id'])
             ->with([
+                'categoriaArticulo:id,nombre_categoria_articulo',
                 'unidadMedida:id,nombre_unidad_medida,abreviatura_unidad_medida',
                 'presentaciones' => function ($query) use ($idsPresentacionesActuales): void {
                     $query->where(function (Builder $query) use ($idsPresentacionesActuales): void {

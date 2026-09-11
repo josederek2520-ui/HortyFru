@@ -60,6 +60,7 @@
                             <th class="px-5 py-3.5">Proveedor</th>
                             <th class="px-5 py-3.5">Contacto</th>
                             <th class="px-5 py-3.5">Ubicación</th>
+                            <th class="px-5 py-3.5">Fecha de registro</th>
                             <th class="px-5 py-3.5">Estado</th>
                             <th class="px-5 py-3.5 text-right">Acciones</th>
                         </tr>
@@ -75,6 +76,7 @@
                                 </td>
                                 <td class="px-5 py-4 text-sm text-gray-700 dark:text-gray-300">{{ $proveedor->telefono_proveedor ?? 'Sin teléfono' }}</td>
                                 <td class="px-5 py-4"><div class="flex max-w-xs flex-col gap-0.5 text-sm"><span class="truncate text-gray-700 dark:text-gray-300">{{ $proveedor->mercado_proveedor ?? 'Sin mercado' }}</span><span class="truncate text-xs text-gray-400">{{ $proveedor->direccion_proveedor ?? 'Sin dirección' }}</span></div></td>
+                                <td class="whitespace-nowrap px-5 py-4 text-sm text-gray-600 dark:text-gray-300">{{ $proveedor->created_at->format('d/m/Y') }}</td>
                                 <td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold {{ $proveedor->estado_proveedor ? 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}"><span class="h-1.5 w-1.5 rounded-full {{ $proveedor->estado_proveedor ? 'bg-success-500' : 'bg-gray-400' }}"></span>{{ $proveedor->estado_proveedor ? 'Activo' : 'Inactivo' }}</span></td>
                                 <td class="px-5 py-4">
                                     <div class="flex justify-end gap-2">
@@ -92,7 +94,7 @@
                 @foreach ($this->providers as $proveedor)
                     <article wire:key="provider-card-{{ $proveedor->id }}" class="flex flex-col gap-4 p-5">
                         <div class="flex items-start justify-between gap-3"><div class="min-w-0"><h3 class="truncate font-semibold text-gray-800 dark:text-white/90">{{ $proveedor->nombre_proveedor }}</h3><p class="mt-1 truncate text-sm text-gray-500">{{ $proveedor->mercado_proveedor ?? 'Mercado sin registrar' }}</p></div><span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold {{ $proveedor->estado_proveedor ? 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">{{ $proveedor->estado_proveedor ? 'Activo' : 'Inactivo' }}</span></div>
-                        <dl class="grid grid-cols-1 gap-3 rounded-xl bg-gray-50 p-3 text-xs sm:grid-cols-2 dark:bg-gray-900/60"><div><dt class="text-gray-500">Teléfono</dt><dd class="mt-1 font-medium text-gray-700 dark:text-gray-300">{{ $proveedor->telefono_proveedor ?? 'Sin registrar' }}</dd></div><div class="min-w-0"><dt class="text-gray-500">Dirección</dt><dd class="mt-1 truncate font-medium text-gray-700 dark:text-gray-300">{{ $proveedor->direccion_proveedor ?? 'Sin registrar' }}</dd></div></dl>
+                        <dl class="grid grid-cols-1 gap-3 rounded-xl bg-gray-50 p-3 text-xs sm:grid-cols-3 dark:bg-gray-900/60"><div><dt class="text-gray-500">Teléfono</dt><dd class="mt-1 font-medium text-gray-700 dark:text-gray-300">{{ $proveedor->telefono_proveedor ?? 'Sin registrar' }}</dd></div><div class="min-w-0"><dt class="text-gray-500">Dirección</dt><dd class="mt-1 truncate font-medium text-gray-700 dark:text-gray-300">{{ $proveedor->direccion_proveedor ?? 'Sin registrar' }}</dd></div><div><dt class="text-gray-500">Fecha de registro</dt><dd class="mt-1 font-medium text-gray-700 dark:text-gray-300">{{ $proveedor->created_at->format('d/m/Y') }}</dd></div></dl>
                         <div class="grid grid-cols-2 gap-2">@can('update', $proveedor)<button type="button" wire:click="openEditModal({{ $proveedor->id }})" class="h-10 rounded-lg border border-gray-300 text-sm font-semibold text-gray-700 dark:border-gray-700 dark:text-gray-300">Editar</button>@endcan @can('changeStatus', $proveedor)<button type="button" wire:click="openStatusModal({{ $proveedor->id }})" class="h-10 rounded-lg text-sm font-semibold {{ $proveedor->estado_proveedor ? 'bg-error-50 text-error-700 dark:bg-error-500/10 dark:text-error-400' : 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400' }}">{{ $proveedor->estado_proveedor ? 'Desactivar' : 'Activar' }}</button>@endcan</div>
                     </article>
                 @endforeach

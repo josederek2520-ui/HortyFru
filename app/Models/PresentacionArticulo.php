@@ -53,6 +53,16 @@ class PresentacionArticulo extends Model
         return $this->hasMany(DetallePedido::class);
     }
 
+    public function detallesCompra(): HasMany
+    {
+        return $this->hasMany(DetalleCompra::class);
+    }
+
+    public function detallesRecepcion(): HasMany
+    {
+        return $this->hasMany(DetalleRecepcion::class);
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -71,9 +81,9 @@ class PresentacionArticulo extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->setDescriptionForEvent(fn (string $eventName): string => match ($eventName) {
-                'created' => 'Presentación de artículo registrada',
-                'updated' => 'Presentación de artículo actualizada',
-                default => 'Actividad de presentación de artículo',
+                'created' => 'Presentación de producto registrada',
+                'updated' => 'Presentación de producto actualizada',
+                default => 'Actividad de presentación de producto',
             });
     }
 

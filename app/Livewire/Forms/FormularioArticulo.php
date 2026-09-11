@@ -105,9 +105,9 @@ class FormularioArticulo extends Form
     protected function messages(): array
     {
         return [
-            'nombre_articulo.required' => 'Ingresa el nombre del artículo.',
+            'nombre_articulo.required' => 'Ingresa el nombre del producto.',
             'nombre_articulo.min' => 'El nombre debe tener al menos 2 caracteres.',
-            'nombre_articulo.unique' => 'Ya existe un artículo con este nombre.',
+            'nombre_articulo.unique' => 'Ya existe un producto con este nombre.',
             'nombre_articulo.not_regex' => 'El nombre contiene caracteres no permitidos.',
             'categoria_articulo_id.required' => 'Selecciona una categoría.',
             'categoria_articulo_id.exists' => 'La categoría seleccionada no está disponible.',
@@ -124,10 +124,10 @@ class FormularioArticulo extends Form
     protected function validationAttributes(): array
     {
         return [
-            'nombre_articulo' => 'nombre del artículo',
+            'nombre_articulo' => 'nombre del producto',
             'categoria_articulo_id' => 'categoría',
             'unidad_medida_id' => 'unidad de medida',
-            'imagen_articulo' => 'imagen del artículo',
+            'imagen_articulo' => 'imagen del producto',
             'eliminar_imagen' => 'eliminación de imagen',
             'estado_articulo' => 'estado',
         ];

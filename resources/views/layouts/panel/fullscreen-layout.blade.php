@@ -9,6 +9,7 @@
     <title>{{ $title ?? 'Acceso' }} | HortyFru</title>
 
     <!-- Scripts -->
+    @livewireStyles
     @vite(['resources/css/panel.css', 'resources/js/panel.js'])
 
     <!-- Alpine.js -->
@@ -83,33 +84,20 @@
             const theme = savedTheme || systemTheme;
             if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
-                document.body.classList.add('dark', 'bg-gray-900');
+                document.body?.classList.add('dark', 'bg-gray-900');
             } else {
                 document.documentElement.classList.remove('dark');
-                document.body.classList.remove('dark', 'bg-gray-900');
+                document.body?.classList.remove('dark', 'bg-gray-900');
             }
         })();
     </script>
 </head>
 
-<body x-data="{ 'loaded': true}" x-init="$store.sidebar.isExpanded = window.innerWidth >= 1280;
-const checkMobile = () => {
-    if (window.innerWidth < 1280) {
-        $store.sidebar.setMobileOpen(false);
-        $store.sidebar.isExpanded = false;
-    } else {
-        $store.sidebar.isMobileOpen = false;
-        $store.sidebar.isExpanded = true;
-    }
-};
-window.addEventListener('resize', checkMobile);">
-
-    {{-- preloader --}}
-    <x-panel.common.preloader/>
-    {{-- preloader end --}}
+<body x-data="panelLayout" x-on:resize.window="checkViewport()">
 
     @yield('content')
 
+    @livewireScriptConfig
 </body>
 
 @stack('scripts')

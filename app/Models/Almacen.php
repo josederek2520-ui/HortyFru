@@ -6,6 +6,7 @@ use App\Enums\ActivityLogName;
 use Database\Factories\AlmacenFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -27,6 +28,16 @@ class Almacen extends Model
     protected $attributes = [
         'estado_almacen' => true,
     ];
+
+    public function movimientosInventario(): HasMany
+    {
+        return $this->hasMany(MovimientoInventario::class);
+    }
+
+    public function recepciones(): HasMany
+    {
+        return $this->hasMany(Recepcion::class);
+    }
 
     public function getActivitylogOptions(): LogOptions
     {

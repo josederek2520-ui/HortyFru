@@ -1,3 +1,4 @@
+import ApexCharts from 'apexcharts';
 
 export function initChartEight() {
     const chartEightEl = document.querySelector('#chartEight');

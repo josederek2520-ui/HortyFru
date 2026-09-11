@@ -1,15 +1,41 @@
 import './bootstrap';
 import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
-import ApexCharts from 'apexcharts';
 import { createPopper } from '@popperjs/core';
+import orderArticleSelect from './components/order-article-select';
+import purchaseArticleSelect from './components/purchase-article-select';
+
+Alpine.data('orderArticleSelect', orderArticleSelect);
+Alpine.data('purchaseArticleSelect', purchaseArticleSelect);
 
 // flatpickr
 import flatpickr from 'flatpickr';
+import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import 'flatpickr/dist/flatpickr.min.css';
 window.Alpine = Alpine;
-window.ApexCharts = ApexCharts;
 window.flatpickr = flatpickr;
+window.flatpickrSpanish = Spanish;
 window.createPopper = createPopper;
+
+Alpine.data('panelLayout', () => ({
+    desktop: window.innerWidth >= 1280,
+
+    init() {
+        this.$store.theme.updateTheme();
+        this.$store.sidebar.isMobileOpen = false;
+        this.$store.sidebar.isHovered = false;
+    },
+
+    checkViewport() {
+        const desktop = window.innerWidth >= 1280;
+
+        if (desktop !== this.desktop) {
+            this.$store.sidebar.isExpanded = desktop;
+            this.$store.sidebar.isMobileOpen = false;
+            this.$store.sidebar.isHovered = false;
+            this.desktop = desktop;
+        }
+    },
+}));
 
 Alpine.data('quickAccess', () => ({
     isApplicationMenuOpen: false,
@@ -94,7 +120,7 @@ Alpine.data('quickAccess', () => ({
 
     navigate(item) {
         this.closeSearch();
-        window.location.assign(item.path);
+        Livewire.navigate(item.path);
     },
 }));
 
@@ -116,6 +142,10 @@ Alpine.data('toastNotification', () => ({
                 type: this.$el.dataset.initialType,
             });
         }
+    },
+
+    destroy() {
+        window.clearTimeout(this.timerId);
     },
 
     show(payload = {}) {
@@ -171,37 +201,53 @@ Alpine.data('toastNotification', () => ({
     },
 }));
 
-Livewire.start();
+const pageWidgets = [
+    ['#mapOne', () => import('./components/map'), 'initMap'],
+    ['#chartOne', () => import('./components/chart/chart-1'), 'initChartOne'],
+    ['#chartTwo', () => import('./components/chart/chart-2'), 'initChartTwo'],
+    ['#chartThree', () => import('./components/chart/chart-3'), 'initChartThree'],
+    ['#chartSix', () => import('./components/chart/chart-6'), 'initChartSix'],
+    ['#chartEight', () => import('./components/chart/chart-8'), 'initChartEight'],
+    ['#chartThirteen', () => import('./components/chart/chart-13'), 'initChartThirteen'],
+    ['#calendar', () => import('./components/calendar-init'), 'calendarInit'],
+];
 
-// Initialize components on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-    // Map imports
-    if (document.querySelector('#mapOne')) {
-        import('./components/map').then(module => module.initMap());
-    }
+let pageGeneration = 0;
+const activeWidgets = new Map();
 
-    // Chart imports
-    if (document.querySelector('#chartOne')) {
-        import('./components/chart/chart-1').then(module => module.initChartOne());
-    }
-    if (document.querySelector('#chartTwo')) {
-        import('./components/chart/chart-2').then(module => module.initChartTwo());
-    }
-    if (document.querySelector('#chartThree')) {
-        import('./components/chart/chart-3').then(module => module.initChartThree());
-    }
-    if (document.querySelector('#chartSix')) {
-        import('./components/chart/chart-6').then(module => module.initChartSix());
-    }
-    if (document.querySelector('#chartEight')) {
-        import('./components/chart/chart-8').then(module => module.initChartEight());
-    }
-    if (document.querySelector('#chartThirteen')) {
-        import('./components/chart/chart-13').then(module => module.initChartThirteen());
+document.addEventListener('livewire:navigating', () => {
+    pageGeneration++;
+
+    for (const instance of activeWidgets.values()) {
+        instance?.destroy();
     }
 
-    // Calendar init
-    if (document.querySelector('#calendar')) {
-        import('./components/calendar-init').then(module => module.calendarInit());
+    activeWidgets.clear();
+});
+
+document.addEventListener('livewire:navigated', () => {
+    const generation = pageGeneration;
+
+    for (const [selector, load, initialize] of pageWidgets) {
+        const element = document.querySelector(selector);
+
+        if (!element || activeWidgets.has(element)) {
+            continue;
+        }
+
+        activeWidgets.set(element, null);
+        load().then((module) => {
+            if (generation !== pageGeneration || !element.isConnected) {
+                return;
+            }
+
+            element.replaceChildren();
+            activeWidgets.set(element, module[initialize]());
+        }).catch((error) => {
+            activeWidgets.delete(element);
+            console.error('No se pudo inicializar el componente del panel:', selector, error);
+        });
     }
 });
+
+Livewire.start();

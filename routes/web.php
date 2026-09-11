@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Compra;
 use App\Models\Pedido;
+use App\Models\Recepcion;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
 
@@ -15,11 +17,21 @@ Route::middleware(['auth', 'active'])->prefix('panel')->name('panel.')->group(fu
     Route::view('/proveedores', 'panel.proveedores.index')->name('proveedores.index');
     Route::view('/vehiculos', 'panel.vehiculos.index')->name('vehiculos.index');
     Route::view('/almacenes', 'panel.almacenes.index')->name('almacenes.index');
+    Route::view('/lotes', 'panel.lotes.index')->name('lotes.index');
+    Route::view('/movimientos-inventario', 'panel.movimientos-inventario.index')->name('movimientos-inventario.index');
     Route::view('/categorias-articulos', 'panel.categorias-articulos.index')->name('categorias-articulos.index');
     Route::view('/unidades-medida', 'panel.unidades-medida.index')->name('unidades-medida.index');
     Route::view('/articulos', 'panel.articulos.index')->name('articulos.index');
     Route::view('/presentaciones-articulos', 'panel.presentaciones-articulos.index')->name('presentaciones-articulos.index');
     Route::view('/pedidos', 'panel.pedidos.index')->name('pedidos.index');
+    Route::view('/compras', 'panel.compras.index')->name('compras.index');
+    Route::view('/recepciones', 'panel.recepciones.index')->name('recepciones.index');
+    Route::get('/recepciones/{recepcion}/productos', function (Recepcion $recepcion): View {
+        return view('panel.recepciones.details', ['recepcion' => $recepcion]);
+    })->name('recepciones.details');
+    Route::get('/compras/{compra}/productos', function (Compra $compra): View {
+        return view('panel.compras.details', ['compra' => $compra]);
+    })->name('compras.details');
     Route::view('/pedidos/crear', 'panel.pedidos.create')->name('pedidos.create');
     Route::get('/pedidos/{pedido}/editar', function (Pedido $pedido): View {
         return view('panel.pedidos.edit', ['pedido' => $pedido]);

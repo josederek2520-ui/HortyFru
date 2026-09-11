@@ -61,6 +61,16 @@ class User extends Authenticatable
         return $this->hasMany(Pedido::class, 'registrado_por');
     }
 
+    public function comprasRegistradas(): HasMany
+    {
+        return $this->hasMany(Compra::class, 'registrado_por');
+    }
+
+    public function recepcionesRegistradas(): HasMany
+    {
+        return $this->hasMany(Recepcion::class, 'registrado_por');
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

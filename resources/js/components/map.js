@@ -57,6 +57,8 @@ export const initMap = () => {
                 );
             },
         });
+
+        return mapOne;
     }
 };
 

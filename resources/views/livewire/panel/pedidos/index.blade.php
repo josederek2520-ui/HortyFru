@@ -33,7 +33,16 @@
                     <svg class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.7"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
                     <input type="search" wire:model.live.debounce.350ms="search" placeholder="Buscar pedido, cliente o sucursal..." class="h-11 w-full rounded-xl border border-gray-300 bg-transparent py-2.5 pl-11 pr-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-brand-400 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-brand-500">
                 </label>
-                <input type="date" wire:model.live="requiredDate" aria-label="Filtrar por fecha requerida" class="h-11 rounded-xl border border-gray-300 bg-transparent px-3 text-sm text-gray-700 outline-none focus:border-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+                <x-panel.form.date-picker
+                    id="orders-required-date-filter"
+                    model="requiredDate"
+                    :default-date="$requiredDate ?: null"
+                    placeholder="dd/mm/aaaa"
+                    aria-label="Filtrar por fecha requerida"
+                    compact
+                    wire:key="orders-required-date-filter-{{ $requiredDate ?: 'empty' }}"
+                    class="md:w-40"
+                />
             </div>
 
             <div class="flex items-center justify-between gap-4 2xl:justify-end">

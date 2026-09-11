@@ -139,11 +139,11 @@ class FormularioPresentacionArticulo extends Form
     protected function messages(): array
     {
         return [
-            'articulo_id.required' => 'Selecciona un artículo.',
-            'articulo_id.exists' => 'El artículo seleccionado no está disponible.',
+            'articulo_id.required' => 'Selecciona un producto.',
+            'articulo_id.exists' => 'El producto seleccionado no está disponible.',
             'nombre_presentacion_articulo.required' => 'Ingresa el nombre de la presentación.',
             'nombre_presentacion_articulo.min' => 'El nombre debe tener al menos 2 caracteres.',
-            'nombre_presentacion_articulo.unique' => 'Este artículo ya tiene una presentación con el mismo nombre.',
+            'nombre_presentacion_articulo.unique' => 'Este producto ya tiene una presentación con el mismo nombre.',
             'nombre_presentacion_articulo.not_regex' => 'El nombre contiene caracteres no permitidos.',
             'uso_presentacion_articulo.required' => 'Selecciona dónde se utilizará la presentación.',
             'uso_presentacion_articulo.enum' => 'El uso seleccionado no es válido.',
@@ -160,7 +160,7 @@ class FormularioPresentacionArticulo extends Form
     protected function validationAttributes(): array
     {
         return [
-            'articulo_id' => 'artículo',
+            'articulo_id' => 'producto',
             'nombre_presentacion_articulo' => 'nombre de la presentación',
             'uso_presentacion_articulo' => 'uso',
             'tipo_equivalencia_presentacion_articulo' => 'tipo de equivalencia',

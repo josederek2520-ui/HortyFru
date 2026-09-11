@@ -63,7 +63,7 @@
         :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ?
         'xl:justify-center' :
         'justify-start'">
-        <a href="{{ route('panel.inicio') }}" class="flex items-center gap-3" aria-label="Ir al panel de HortyFru">
+        <a href="{{ route('panel.inicio') }}" wire:navigate class="flex items-center gap-3" aria-label="Ir al panel de HortyFru">
             <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success-500 text-white shadow-theme-xs">
                 <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M19.5 4.5C12 4.7 7.3 7.8 6.4 13.2c-.5 3.1 1.5 5.8 4.6 5.8 5.5 0 8.1-6.1 8.5-14.5Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
@@ -150,7 +150,7 @@
                                             <ul class="mt-2 space-y-1 ml-9">
                                                 @foreach ($item['subItems'] as $subItem)
                                                     <li>
-                                                        <a href="{{ $subItem['path'] }}" class="menu-dropdown-item"
+                                                        <a href="{{ $subItem['path'] }}" wire:navigate class="menu-dropdown-item"
                                                             :class="isActive('{{ $subItem['path'] }}') ?
                                                                 'menu-dropdown-item-active' :
                                                                 'menu-dropdown-item-inactive'">
@@ -180,7 +180,7 @@
                                         </div>
                                     @else
                                         <!-- Simple Menu Item -->
-                                        <a href="{{ $item['path'] }}" class="menu-item group"
+                                        <a href="{{ $item['path'] }}" wire:navigate class="menu-item group"
                                             :class="[
                                                 isActive('{{ $item['path'] }}') ? 'menu-item-active' :
                                                 'menu-item-inactive',

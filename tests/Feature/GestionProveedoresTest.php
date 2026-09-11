@@ -35,12 +35,17 @@ class GestionProveedoresTest extends TestCase
     public function test_administrador_puede_ver_proveedores(): void
     {
         $administrador = $this->crearAdministrador();
-        Proveedor::factory()->create(['nombre_proveedor' => 'Productor Valle Verde']);
+        Proveedor::factory()->create([
+            'nombre_proveedor' => 'Productor Valle Verde',
+            'created_at' => '2026-09-08 12:00:00',
+        ]);
 
         $this->actingAs($administrador)
             ->get(route('panel.proveedores.index'))
             ->assertOk()
-            ->assertSee('Productor Valle Verde');
+            ->assertSee('Productor Valle Verde')
+            ->assertSee('Fecha de registro')
+            ->assertSee('08/09/2026');
     }
 
     public function test_administrador_crea_proveedor_con_datos_normalizados_y_auditoria(): void

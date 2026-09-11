@@ -340,12 +340,20 @@ export function calendarInit() {
     });
 
     // Close when clicking outside modal
-    window.addEventListener("click", (event) => {
+    const handleOutsideClick = (event) => {
       const modal = document.getElementById("eventModal");
       if (event.target === modal) {
         closeModal();
       }
-    });
+    };
+    window.addEventListener("click", handleOutsideClick);
+
+    return {
+      destroy() {
+        window.removeEventListener("click", handleOutsideClick);
+        calendar.destroy();
+      },
+    };
   }
 }
 

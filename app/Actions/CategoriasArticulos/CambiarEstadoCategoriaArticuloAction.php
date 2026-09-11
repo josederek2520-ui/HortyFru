@@ -26,7 +26,7 @@ class CambiarEstadoCategoriaArticuloAction
                     'old' => ['estado_categoria_articulo' => $estadoAnterior],
                     'attributes' => ['estado_categoria_articulo' => $nuevoEstado],
                 ])
-                ->log($nuevoEstado ? 'Categoría de artículo activada' : 'Categoría de artículo desactivada');
+                ->log($nuevoEstado ? 'Categoría de producto activada' : 'Categoría de producto desactivada');
 
             return $categoriaArticulo->refresh();
         });

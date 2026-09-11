@@ -52,6 +52,26 @@ class Articulo extends Model
         return $this->hasMany(DetallePedido::class);
     }
 
+    public function detallesCompra(): HasMany
+    {
+        return $this->hasMany(DetalleCompra::class);
+    }
+
+    public function detallesRecepcion(): HasMany
+    {
+        return $this->hasMany(DetalleRecepcion::class);
+    }
+
+    public function lotes(): HasMany
+    {
+        return $this->hasMany(Lote::class);
+    }
+
+    public function detallesMovimientoInventario(): HasMany
+    {
+        return $this->hasMany(DetalleMovimientoInventario::class);
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -66,9 +86,9 @@ class Articulo extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->setDescriptionForEvent(fn (string $eventName): string => match ($eventName) {
-                'created' => 'Artículo registrado',
-                'updated' => 'Artículo actualizado',
-                default => 'Actividad de artículo',
+                'created' => 'Producto registrado',
+                'updated' => 'Producto actualizado',
+                default => 'Actividad de producto',
             });
     }
 

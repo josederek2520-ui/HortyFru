@@ -38,9 +38,9 @@ class CategoriaArticulo extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->setDescriptionForEvent(fn (string $eventName): string => match ($eventName) {
-                'created' => 'Categoría de artículo registrada',
-                'updated' => 'Categoría de artículo actualizada',
-                default => 'Actividad de categoría de artículo',
+                'created' => 'Categoría de producto registrada',
+                'updated' => 'Categoría de producto actualizada',
+                default => 'Actividad de categoría de producto',
             });
     }
 

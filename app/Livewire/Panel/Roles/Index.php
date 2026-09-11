@@ -166,6 +166,10 @@ class Index extends Component
     #[Computed]
     public function permissionGroups(): array
     {
+        if (! $this->showFormModal) {
+            return [];
+        }
+
         $permissions = Permission::query()
             ->select(['id', 'name'])
             ->where('guard_name', 'web')

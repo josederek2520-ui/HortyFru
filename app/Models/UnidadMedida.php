@@ -6,6 +6,7 @@ use App\Enums\ActivityLogName;
 use Database\Factories\UnidadMedidaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -27,6 +28,21 @@ class UnidadMedida extends Model
     protected $attributes = [
         'estado_unidad_medida' => true,
     ];
+
+    public function detallesCompra(): HasMany
+    {
+        return $this->hasMany(DetalleCompra::class);
+    }
+
+    public function detallesRecepcion(): HasMany
+    {
+        return $this->hasMany(DetalleRecepcion::class);
+    }
+
+    public function detallesMovimientoInventario(): HasMany
+    {
+        return $this->hasMany(DetalleMovimientoInventario::class);
+    }
 
     public function getActivitylogOptions(): LogOptions
     {

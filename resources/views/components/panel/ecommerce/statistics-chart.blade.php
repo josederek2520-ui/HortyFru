@@ -34,8 +34,12 @@
             </div>
 
             <div x-data="{
+                datepicker: null,
+                destroy() {
+                    this.datepicker?.destroy();
+                },
                 init() {
-                    flatpickr(this.$refs.datepicker, {
+                    this.datepicker = flatpickr(this.$refs.datepicker, {
                         mode: 'range',
                         static: true,
                         monthSelectorType: 'static',

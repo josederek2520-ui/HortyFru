@@ -22,6 +22,24 @@ class GestionArticulosTest extends TestCase
 {
     use LazilyRefreshDatabase;
 
+    public function test_catalogos_del_formulario_se_cargan_solo_al_abrirlo(): void
+    {
+        $administrador = $this->crearAdministrador();
+        CategoriaArticulo::factory()->create(['nombre_categoria_articulo' => 'Categoria solo para formulario']);
+        UnidadMedida::factory()->create(['nombre_unidad_medida' => 'Unidad solo para formulario']);
+
+        Livewire::actingAs($administrador)
+            ->test(Index::class)
+            ->assertDontSee('Categoria solo para formulario')
+            ->assertDontSee('Unidad solo para formulario')
+            ->call('openCreateModal')
+            ->assertSee('Categoria solo para formulario')
+            ->assertSee('Unidad solo para formulario')
+            ->call('closeFormModal')
+            ->assertDontSee('Categoria solo para formulario')
+            ->assertDontSee('Unidad solo para formulario');
+    }
+
     public function test_usuario_no_autenticado_es_redirigido_desde_gestion_de_articulos(): void
     {
         $this->get(route('panel.articulos.index'))->assertRedirect(route('login'));
@@ -68,8 +86,8 @@ class GestionArticulosTest extends TestCase
             ->assertSet('showFormModal', false)
             ->assertDispatched(
                 'toast',
-                title: 'Artículo registrado',
-                message: 'El artículo Mix de verduras 500 g fue registrado correctamente.',
+                title: 'Producto registrado',
+                message: 'El producto Mix de verduras 500 g fue registrado correctamente.',
                 type: 'success',
             );
 
@@ -231,7 +249,7 @@ class GestionArticulosTest extends TestCase
             ->set('form.unidad_medida_id', $unidadNueva->id)
             ->call('save')
             ->assertHasNoErrors()
-            ->assertDispatched('toast', title: 'Artículo actualizado', type: 'info');
+            ->assertDispatched('toast', title: 'Producto actualizado', type: 'info');
 
         $articulo->refresh();
         $this->assertSame('Bandeja plástica', $articulo->nombre_articulo);
@@ -307,7 +325,7 @@ class GestionArticulosTest extends TestCase
         $componente
             ->call('openStatusModal', $articulo->id)
             ->call('changeStatus')
-            ->assertDispatched('toast', title: 'Artículo desactivado', type: 'warning');
+            ->assertDispatched('toast', title: 'Producto desactivado', type: 'warning');
 
         $this->assertFalse($articulo->fresh()->estado_articulo);
         $this->assertModelExists($articulo);
@@ -315,7 +333,7 @@ class GestionArticulosTest extends TestCase
         $componente
             ->call('openStatusModal', $articulo->id)
             ->call('changeStatus')
-            ->assertDispatched('toast', title: 'Artículo activado', type: 'success');
+            ->assertDispatched('toast', title: 'Producto activado', type: 'success');
 
         $this->assertTrue($articulo->fresh()->estado_articulo);
         $this->assertSame(2, Activity::query()

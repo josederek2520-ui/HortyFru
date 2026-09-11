@@ -6,7 +6,7 @@
                 Inventario
             </div>
             <h1 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Unidades de medida</h1>
-            <p class="max-w-2xl text-sm text-gray-500 dark:text-gray-400">Administra las unidades usadas para registrar cantidades de artículos e insumos.</p>
+            <p class="max-w-2xl text-sm text-gray-500 dark:text-gray-400">Administra las unidades usadas para registrar cantidades de productos e insumos.</p>
         </div>
 
         @can('create', App\Models\UnidadMedida::class)

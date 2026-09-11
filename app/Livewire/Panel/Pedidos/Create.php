@@ -84,8 +84,9 @@ class Create extends Component
     public function articleOptions(): Collection
     {
         return Articulo::query()
-            ->select(['id', 'nombre_articulo', 'unidad_medida_id'])
+            ->select(['id', 'nombre_articulo', 'unidad_medida_id', 'categoria_articulo_id'])
             ->with([
+                'categoriaArticulo:id,nombre_categoria_articulo',
                 'unidadMedida:id,nombre_unidad_medida,abreviatura_unidad_medida',
                 'presentaciones' => function ($query): void {
                     $query->where('estado_presentacion_articulo', true)

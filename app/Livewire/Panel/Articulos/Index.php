@@ -120,8 +120,8 @@ class Index extends Component
             Gate::authorize('create', Articulo::class);
 
             $articulo = $crearArticulo($this->form->validarParaCrear());
-            $title = 'Artículo registrado';
-            $message = "El artículo {$articulo->nombre_articulo} fue registrado correctamente.";
+            $title = 'Producto registrado';
+            $message = "El producto {$articulo->nombre_articulo} fue registrado correctamente.";
             $type = 'success';
         } else {
             $articulo = Articulo::query()->findOrFail($this->editingArticleId);
@@ -132,7 +132,7 @@ class Index extends Component
             }
 
             $articulo = $actualizarArticulo($articulo, $this->form->validarParaActualizar($articulo));
-            $title = 'Artículo actualizado';
+            $title = 'Producto actualizado';
             $message = "Los datos de {$articulo->nombre_articulo} fueron actualizados.";
             $type = 'info';
         }
@@ -168,8 +168,8 @@ class Index extends Component
 
         $this->closeStatusModal();
         $this->toast(
-            $articulo->estado_articulo ? 'Artículo activado' : 'Artículo desactivado',
-            "El artículo {$articulo->nombre_articulo} fue ".($articulo->estado_articulo ? 'activado' : 'desactivado').'.',
+            $articulo->estado_articulo ? 'Producto activado' : 'Producto desactivado',
+            "El producto {$articulo->nombre_articulo} fue ".($articulo->estado_articulo ? 'activado' : 'desactivado').'.',
             $articulo->estado_articulo ? 'success' : 'warning',
         );
     }
@@ -212,6 +212,10 @@ class Index extends Component
     #[Computed]
     public function categoryOptions(): Collection
     {
+        if (! $this->showFormModal) {
+            return new Collection;
+        }
+
         return CategoriaArticulo::query()
             ->select(['id', 'nombre_categoria_articulo'])
             ->where(function ($query): void {
@@ -228,6 +232,10 @@ class Index extends Component
     #[Computed]
     public function measurementUnitOptions(): Collection
     {
+        if (! $this->showFormModal) {
+            return new Collection;
+        }
+
         return UnidadMedida::query()
             ->select(['id', 'nombre_unidad_medida', 'abreviatura_unidad_medida'])
             ->where(function ($query): void {

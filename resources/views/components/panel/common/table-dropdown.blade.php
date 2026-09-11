@@ -17,6 +17,9 @@
             });
         });
     },
+    destroy() {
+        this.popperInstance?.destroy();
+    },
     toggle() {
         this.isOpen = !this.isOpen;
         if (this.popperInstance) {

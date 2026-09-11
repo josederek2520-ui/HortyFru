@@ -26,7 +26,7 @@ class CambiarEstadoArticuloAction
                     'old' => ['estado_articulo' => $estadoAnterior],
                     'attributes' => ['estado_articulo' => $nuevoEstado],
                 ])
-                ->log($nuevoEstado ? 'Artículo activado' : 'Artículo desactivado');
+                ->log($nuevoEstado ? 'Producto activado' : 'Producto desactivado');
 
             return $articulo->refresh();
         });

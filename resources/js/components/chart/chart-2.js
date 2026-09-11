@@ -1,3 +1,4 @@
+import ApexCharts from 'apexcharts';
 
 export const initChartTwo = () => {
     const chartElement = document.querySelector('#chartTwo');

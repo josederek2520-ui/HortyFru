@@ -5,9 +5,11 @@ namespace App\Livewire\Panel\PresentacionesArticulos;
 use App\Actions\PresentacionesArticulos\ActualizarPresentacionArticuloAction;
 use App\Actions\PresentacionesArticulos\CambiarEstadoPresentacionArticuloAction;
 use App\Actions\PresentacionesArticulos\CrearPresentacionArticuloAction;
+use App\Enums\UsoPresentacionArticulo;
 use App\Livewire\Concerns\InteractsWithToasts;
 use App\Livewire\Forms\FormularioPresentacionArticulo;
 use App\Models\Articulo;
+use App\Models\CategoriaArticulo;
 use App\Models\PresentacionArticulo;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\View;
@@ -36,6 +38,8 @@ class Index extends Component
     public bool $showStatusModal = false;
 
     public ?int $editingPresentationId = null;
+
+    public string $selectedCategoryId = '';
 
     public ?int $statusPresentationId = null;
 
@@ -69,6 +73,7 @@ class Index extends Component
         Gate::authorize('create', PresentacionArticulo::class);
 
         $this->editingPresentationId = null;
+        $this->selectedCategoryId = '';
         $this->form->limpiar();
         $this->showFormModal = true;
         $this->dispatch('article-presentation-form-opened');
@@ -76,10 +81,13 @@ class Index extends Component
 
     public function openEditModal(int $presentationId): void
     {
-        $presentacionArticulo = PresentacionArticulo::query()->findOrFail($presentationId);
+        $presentacionArticulo = PresentacionArticulo::query()
+            ->with('articulo:id,categoria_articulo_id')
+            ->findOrFail($presentationId);
         Gate::authorize('update', $presentacionArticulo);
 
         $this->editingPresentationId = $presentacionArticulo->id;
+        $this->selectedCategoryId = (string) $presentacionArticulo->articulo->categoria_articulo_id;
         $this->form->limpiar();
         $this->form->llenarDesde($presentacionArticulo);
         $this->showFormModal = true;
@@ -90,7 +98,14 @@ class Index extends Component
     {
         $this->showFormModal = false;
         $this->editingPresentationId = null;
+        $this->selectedCategoryId = '';
         $this->form->limpiar();
+    }
+
+    public function updatedSelectedCategoryId(): void
+    {
+        $this->form->articulo_id = null;
+        $this->resetValidation('form.articulo_id');
     }
 
     public function save(
@@ -198,16 +213,49 @@ class Index extends Component
             })
             ->when($this->status === 'active', fn ($query) => $query->where('estado_presentacion_articulo', true))
             ->when($this->status === 'inactive', fn ($query) => $query->where('estado_presentacion_articulo', false))
+            ->when($this->status === 'order', fn ($query) => $query->whereIn('uso_presentacion_articulo', [
+                UsoPresentacionArticulo::Pedido->value,
+                UsoPresentacionArticulo::Ambos->value,
+            ]))
+            ->when($this->status === 'purchase', fn ($query) => $query->whereIn('uso_presentacion_articulo', [
+                UsoPresentacionArticulo::Compra->value,
+                UsoPresentacionArticulo::Ambos->value,
+            ]))
             ->orderBy('nombre_presentacion_articulo')
             ->paginate(10);
     }
 
     #[Computed]
+    public function categoryOptions(): Collection
+    {
+        if (! $this->showFormModal) {
+            return new Collection;
+        }
+
+        return CategoriaArticulo::query()
+            ->select(['id', 'nombre_categoria_articulo'])
+            ->where(function ($query): void {
+                $query->where('estado_categoria_articulo', true);
+
+                if ($this->selectedCategoryId !== '') {
+                    $query->orWhere('id', (int) $this->selectedCategoryId);
+                }
+            })
+            ->orderBy('nombre_categoria_articulo')
+            ->get();
+    }
+
+    #[Computed]
     public function articleOptions(): Collection
     {
+        if (! $this->showFormModal || $this->selectedCategoryId === '') {
+            return new Collection;
+        }
+
         return Articulo::query()
-            ->select(['id', 'nombre_articulo', 'unidad_medida_id'])
+            ->select(['id', 'nombre_articulo', 'categoria_articulo_id', 'unidad_medida_id'])
             ->with('unidadMedida:id,nombre_unidad_medida,abreviatura_unidad_medida')
+            ->where('categoria_articulo_id', (int) $this->selectedCategoryId)
             ->where(function ($query): void {
                 $query->where('estado_articulo', true);
 
@@ -229,6 +277,28 @@ class Index extends Component
     public function activePresentations(): int
     {
         return PresentacionArticulo::query()->where('estado_presentacion_articulo', true)->count();
+    }
+
+    #[Computed]
+    public function orderPresentations(): int
+    {
+        return PresentacionArticulo::query()
+            ->whereIn('uso_presentacion_articulo', [
+                UsoPresentacionArticulo::Pedido->value,
+                UsoPresentacionArticulo::Ambos->value,
+            ])
+            ->count();
+    }
+
+    #[Computed]
+    public function purchasePresentations(): int
+    {
+        return PresentacionArticulo::query()
+            ->whereIn('uso_presentacion_articulo', [
+                UsoPresentacionArticulo::Compra->value,
+                UsoPresentacionArticulo::Ambos->value,
+            ])
+            ->count();
     }
 
     public function render(): View

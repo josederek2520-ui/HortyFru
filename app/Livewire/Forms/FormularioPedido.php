@@ -100,7 +100,7 @@ class FormularioPedido extends Form
             $errores['form.sucursal_id'] = 'La sucursal o su cliente ya no están activos.';
         }
 
-        if ($pedido === null && $this->fecha_requerida_pedido < today()->toDateString()) {
+        if ($this->fecha_requerida_pedido < today()->toDateString()) {
             $errores['form.fecha_requerida_pedido'] = 'La fecha requerida no puede ser anterior a hoy.';
         }
 
@@ -119,7 +119,7 @@ class FormularioPedido extends Form
                 || $presentacion->articulo_id !== $detalle['articulo_id']
                 || ((! $presentacion->uso_presentacion_articulo->permitePedido()
                     || ! $presentacion->estado_presentacion_articulo) && ! $esPresentacionActual)) {
-                $errores["form.detalles.{$indice}.presentacion_articulo_id"] = 'Selecciona una presentación activa para pedidos del artículo indicado.';
+                $errores["form.detalles.{$indice}.presentacion_articulo_id"] = 'Selecciona una presentación activa para pedidos del producto indicado.';
 
                 continue;
             }
@@ -133,7 +133,7 @@ class FormularioPedido extends Form
             $clave = $detalle['articulo_id'].'-'.$detalle['presentacion_articulo_id'];
 
             if (isset($combinaciones[$clave])) {
-                $errores["form.detalles.{$indice}.presentacion_articulo_id"] = 'Este artículo y presentación ya están agregados al pedido.';
+                $errores["form.detalles.{$indice}.presentacion_articulo_id"] = 'Este producto y presentación ya están agregados al pedido.';
             }
 
             $combinaciones[$clave] = true;
@@ -154,7 +154,7 @@ class FormularioPedido extends Form
             'fecha_requerida_pedido.date_format' => 'La fecha requerida no es válida.',
             'detalles.required' => 'Agrega al menos un producto al pedido.',
             'detalles.min' => 'Agrega al menos un producto al pedido.',
-            'detalles.*.articulo_id.required' => 'Selecciona un artículo.',
+            'detalles.*.articulo_id.required' => 'Selecciona un producto.',
             'detalles.*.presentacion_articulo_id.required' => 'Selecciona una presentación.',
             'detalles.*.cantidad_solicitada_detalle_pedido.required' => 'Ingresa la cantidad solicitada.',
             'detalles.*.cantidad_solicitada_detalle_pedido.numeric' => 'La cantidad debe ser numérica.',
@@ -171,7 +171,7 @@ class FormularioPedido extends Form
             'fecha_requerida_pedido' => 'fecha requerida',
             'observaciones_pedido' => 'observaciones',
             'detalles' => 'productos',
-            'detalles.*.articulo_id' => 'artículo',
+            'detalles.*.articulo_id' => 'producto',
             'detalles.*.presentacion_articulo_id' => 'presentación',
             'detalles.*.cantidad_solicitada_detalle_pedido' => 'cantidad',
             'detalles.*.observaciones_detalle_pedido' => 'observación del producto',

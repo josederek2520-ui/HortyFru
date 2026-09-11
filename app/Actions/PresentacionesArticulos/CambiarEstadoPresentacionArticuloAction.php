@@ -40,7 +40,7 @@ class CambiarEstadoPresentacionArticuloAction
                     'old' => $valoresAnteriores,
                     'attributes' => $nuevosValores,
                 ])
-                ->log($nuevoEstado ? 'Presentación de artículo activada' : 'Presentación de artículo desactivada');
+                ->log($nuevoEstado ? 'Presentación de producto activada' : 'Presentación de producto desactivada');
 
             return $presentacionArticulo->refresh();
         });

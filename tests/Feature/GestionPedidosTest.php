@@ -195,6 +195,32 @@ class GestionPedidosTest extends TestCase
         ]);
     }
 
+    public function test_pedido_pendiente_no_se_puede_actualizar_con_fecha_requerida_anterior(): void
+    {
+        $this->travelTo('2026-09-08 10:00:00');
+        $administrador = $this->crearAdministrador();
+        $pedido = Pedido::factory()->for($administrador, 'registradoPor')->create([
+            'fecha_requerida_pedido' => '2026-09-09',
+        ]);
+        $presentacion = PresentacionArticulo::factory()->create();
+        $pedido->detalles()->create([
+            'articulo_id' => $presentacion->articulo_id,
+            'presentacion_articulo_id' => $presentacion->id,
+            'cantidad_solicitada_detalle_pedido' => '1.000',
+            'equivalencia_base_aplicada_detalle_pedido' => $presentacion->equivalencia_base_presentacion_articulo,
+        ]);
+
+        Livewire::actingAs($administrador)
+            ->test(EditPedido::class, ['pedidoId' => $pedido->id])
+            ->set('form.fecha_requerida_pedido', '2026-09-07')
+            ->call('save')
+            ->assertHasErrors([
+                'form.fecha_requerida_pedido' => 'La fecha requerida no puede ser anterior a hoy.',
+            ]);
+
+        $this->assertSame('2026-09-09', $pedido->fresh()->fecha_requerida_pedido->toDateString());
+    }
+
     public function test_cancelacion_exige_motivo_conserva_detalle_y_bloquea_edicion(): void
     {
         $administrador = $this->crearAdministrador();

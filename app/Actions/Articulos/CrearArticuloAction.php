@@ -21,7 +21,7 @@ class CrearArticuloAction
         $rutaImagen = $imagen?->store('articulos', 'public');
 
         if ($rutaImagen === false) {
-            throw new RuntimeException('No fue posible guardar la imagen del artículo.');
+            throw new RuntimeException('No fue posible guardar la imagen del producto.');
         }
 
         $datos['imagen_articulo'] = $rutaImagen;

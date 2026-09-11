@@ -1,4 +1,4 @@
-@extends('layouts.panel.app', ['title' => 'Artículos'])
+@extends('layouts.panel.app', ['title' => 'Productos'])
 
 @section('content')
     <livewire:panel.articulos.index />

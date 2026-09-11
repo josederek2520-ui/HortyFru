@@ -21,7 +21,7 @@ class ActualizarArticuloAction
         $rutaNueva = $imagenNueva?->store('articulos', 'public');
 
         if ($rutaNueva === false) {
-            throw new RuntimeException('No fue posible guardar la nueva imagen del artículo.');
+            throw new RuntimeException('No fue posible guardar la nueva imagen del producto.');
         }
 
         $datos['imagen_articulo'] = match (true) {

@@ -51,7 +51,7 @@
             </button>
 
             <!-- Logo (mobile only) -->
-            <a href="{{ route('panel.inicio') }}" class="xl:hidden">
+            <a href="{{ route('panel.inicio') }}" wire:navigate class="xl:hidden">
                 <img class="dark:hidden" src="/images/logo/logo.svg" alt="Logo" />
                 <img class="hidden dark:block" src="/images/logo/logo-dark.svg" alt="Logo" />
             </a>

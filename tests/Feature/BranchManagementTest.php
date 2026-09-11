@@ -46,6 +46,38 @@ class BranchManagementTest extends TestCase
             ->assertSee('Mercado Los Pinos S.A.');
     }
 
+    public function test_existing_clients_enable_branch_creation_and_remain_available_after_closing_form(): void
+    {
+        $administrator = $this->createAdministrator();
+        $cliente = Cliente::factory()->create(['razon_social' => 'Cliente disponible sin abrir formulario']);
+
+        $component = Livewire::actingAs($administrator)->test(Index::class);
+
+        $component->assertDontSee('Primero necesitas un cliente')
+            ->assertSee('Registrar una nueva sucursal')
+            ->assertSee($cliente->razon_social)
+            ->call('openCreateModal')
+            ->call('closeFormModal')
+            ->assertDontSee('Primero necesitas un cliente')
+            ->assertSee('Registrar una nueva sucursal')
+            ->assertSee($cliente->razon_social);
+
+        $document = new \DOMDocument;
+        @$document->loadHTML('<?xml encoding="UTF-8">'.$component->html());
+        $xpath = new \DOMXPath($document);
+
+        $this->assertSame(0, $xpath->query('//button[@*[name()="wire:click"]="openCreateModal"]/@disabled')->length);
+        $this->assertSame(1, $xpath->query('//select[@*[name()="wire:model.live"]="client"]/option[@value="'.$cliente->id.'"]')->length);
+    }
+
+    public function test_branch_creation_warns_when_no_clients_exist(): void
+    {
+        Livewire::actingAs($this->createAdministrator())
+            ->test(Index::class)
+            ->assertSee('Primero necesitas un cliente')
+            ->assertSee('Primero registra un cliente');
+    }
+
     public function test_administrator_creates_branch_with_normalized_data_and_activity_log(): void
     {
         $administrator = $this->createAdministrator();

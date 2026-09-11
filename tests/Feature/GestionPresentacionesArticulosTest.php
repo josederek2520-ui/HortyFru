@@ -9,6 +9,7 @@ use App\Enums\UsoPresentacionArticulo;
 use App\Livewire\Panel\PresentacionesArticulos\Index;
 use App\Models\Activity;
 use App\Models\Articulo;
+use App\Models\CategoriaArticulo;
 use App\Models\PresentacionArticulo;
 use App\Models\UnidadMedida;
 use App\Models\User;
@@ -99,6 +100,29 @@ class GestionPresentacionesArticulosTest extends TestCase
             'subject_id' => $presentacionArticulo->id,
             'causer_id' => $administrador->id,
         ]);
+    }
+
+    public function test_categoria_filtra_productos_y_limpia_una_seleccion_incompatible(): void
+    {
+        $administrador = $this->crearAdministrador();
+        $frutas = CategoriaArticulo::factory()->create(['nombre_categoria_articulo' => 'Frutas']);
+        $hortalizas = CategoriaArticulo::factory()->create(['nombre_categoria_articulo' => 'Hortalizas']);
+        $papaya = Articulo::factory()->for($frutas, 'categoriaArticulo')->create(['nombre_articulo' => 'Papaya']);
+        Articulo::factory()->for($hortalizas, 'categoriaArticulo')->create(['nombre_articulo' => 'Zanahoria']);
+
+        Livewire::actingAs($administrador)
+            ->test(Index::class)
+            ->call('openCreateModal')
+            ->assertSee('Frutas')
+            ->assertSee('Hortalizas')
+            ->set('selectedCategoryId', (string) $frutas->id)
+            ->assertSee('Papaya')
+            ->assertDontSee('Zanahoria')
+            ->set('form.articulo_id', $papaya->id)
+            ->set('selectedCategoryId', (string) $hortalizas->id)
+            ->assertSet('form.articulo_id', null)
+            ->assertSee('Zanahoria')
+            ->assertDontSee('Papaya');
     }
 
     public function test_presentacion_requiere_articulo_y_nombre(): void
@@ -244,6 +268,7 @@ class GestionPresentacionesArticulosTest extends TestCase
         Livewire::actingAs($administrador)
             ->test(Index::class)
             ->call('openEditModal', $presentacionArticulo->id)
+            ->assertSet('selectedCategoryId', (string) $articulo->categoria_articulo_id)
             ->set('form.nombre_presentacion_articulo', 'Caja pequeña')
             ->set('form.tipo_equivalencia_presentacion_articulo', TipoEquivalenciaPresentacionArticulo::Variable->value)
             ->set('form.equivalencia_base_presentacion_articulo', null)
@@ -310,6 +335,37 @@ class GestionPresentacionesArticulosTest extends TestCase
             ->assertSee('Caja')
             ->assertDontSee('Bolsa')
             ->assertDontSee('Paquete');
+    }
+
+    public function test_filtros_de_pedido_y_compra_incluyen_presentaciones_de_ambos_usos(): void
+    {
+        $administrador = $this->crearAdministrador();
+        PresentacionArticulo::factory()->create([
+            'nombre_presentacion_articulo' => 'Caja exclusiva',
+            'uso_presentacion_articulo' => UsoPresentacionArticulo::Pedido,
+        ]);
+        PresentacionArticulo::factory()->create([
+            'nombre_presentacion_articulo' => 'Saco exclusivo',
+            'uso_presentacion_articulo' => UsoPresentacionArticulo::Compra,
+        ]);
+        PresentacionArticulo::factory()->create([
+            'nombre_presentacion_articulo' => 'Bandeja compartida',
+            'uso_presentacion_articulo' => UsoPresentacionArticulo::Ambos,
+        ]);
+
+        $componente = Livewire::actingAs($administrador)->test(Index::class);
+
+        $componente
+            ->set('status', 'order')
+            ->assertSee('Caja exclusiva')
+            ->assertSee('Bandeja compartida')
+            ->assertDontSee('Saco exclusivo');
+
+        $componente
+            ->set('status', 'purchase')
+            ->assertSee('Saco exclusivo')
+            ->assertSee('Bandeja compartida')
+            ->assertDontSee('Caja exclusiva');
     }
 
     public function test_usuario_de_solo_lectura_no_ve_acciones_de_presentaciones(): void
